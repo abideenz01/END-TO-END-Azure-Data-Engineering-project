@@ -1,0 +1,15 @@
+{
+	"name": "datafactoryazureprojectzain",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9352a292-b0fc-4d05-a2b3-cbb665e241ea",
+		"tenantId": "019e6b3c-4ea4-4c7f-a42b-8b76b01081e5"
+	}
+}
