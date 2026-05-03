@@ -1,24 +1,148 @@
 bundle:
   name: spotify_dab
-  uuid: 72e406b6-0ab9-456c-b588-ca00eeacda04
 
+# ── Variables — Actual values stored in databricks.dev.yml ──────
+variables:
+  workspace_host:
+    description: "Databricks workspace host URL"
+    default: ""
 
+  root_path:
+    description: "Root path in Databricks workspace"
+    default: ""
+
+  catalog_name:
+    description: "Unity Catalog name"
+    default: ""
+
+  silver_schema:
+    description: "Silver schema name"
+    default: "silver"
+
+  gold_schema:
+    description: "Gold schema name"
+    default: "gold"
+
+  cluster_id:
+    description: "Databricks cluster ID"
+    default: ""
+
+# ── Targets ───────────────────────────────────────────────────────
 targets:
+
+  # ── Development Environment ──────────────────────────────────
   dev:
     mode: development
     default: true
-    presets: 
-         source_linked_deployment: false
+    presets:
+      source_linked_deployment: false
     workspace:
-      host:  https://adb-7405619226202617.17.azuredatabricks.net
-    
-     
+      host: ${var.workspace_host}
+      root_path: ${var.root_path}
+
+  # ── Production Environment ───────────────────────────────────
   prod:
     mode: production
+    presets:
+      source_linked_deployment: false
     workspace:
-      host: https://adb-7405619226202617.17.azuredatabricks.net
-      root_path: /Workspace/PROD/.bundle/${bundle.name}/${bundle.target}
+      host: ${var.workspace_host}
+      root_path: ${var.root_path}
 
-    permissions:
-      - user_name: sellingsphere1@gmail.com
-        level: CAN_MANAGE
+# ── Resources ─────────────────────────────────────────────────────
+resources:
+  jobs:
+
+    # ── Bronze to Silver Pipeline ───────────────────────────────
+    bronze_to_silver_pipeline:
+      name: "Spotify — Bronze to Silver Pipeline"
+      tags:
+        project: spotify
+        layer: silver
+        environment: ${bundle.target}
+
+      tasks:
+        - task_key: silver_factstream
+          notebook_task:
+            notebook_path: ./databricks/notebooks/bronze_to_silver/nb_silver_factstream
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.silver_schema}
+          existing_cluster_id: ${var.cluster_id}
+
+        - task_key: silver_dimuser
+          notebook_task:
+            notebook_path: ./databricks/notebooks/bronze_to_silver/nb_silver_dimuser
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.silver_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: silver_factstream
+
+        - task_key: silver_dimtrack
+          notebook_task:
+            notebook_path: ./databricks/notebooks/bronze_to_silver/nb_silver_dimtrack
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.silver_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: silver_factstream
+
+        - task_key: silver_dimdate
+          notebook_task:
+            notebook_path: ./databricks/notebooks/bronze_to_silver/nb_silver_dimdate
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.silver_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: silver_factstream
+
+    # ── Silver to Gold Pipeline ─────────────────────────────────
+    silver_to_gold_pipeline:
+      name: "Spotify — Silver to Gold Pipeline"
+      tags:
+        project: spotify
+        layer: gold
+        environment: ${bundle.target}
+
+      tasks:
+        - task_key: gold_factstream
+          notebook_task:
+            notebook_path: ./databricks/notebooks/silver_to_gold/dlt_gold_factstream
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.gold_schema}
+          existing_cluster_id: ${var.cluster_id}
+
+        - task_key: gold_dimuser
+          notebook_task:
+            notebook_path: ./databricks/notebooks/silver_to_gold/dlt_gold_dimuser
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.gold_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: gold_factstream
+
+        - task_key: gold_dimtrack
+          notebook_task:
+            notebook_path: ./databricks/notebooks/silver_to_gold/dlt_gold_dimtrack
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.gold_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: gold_factstream
+
+        - task_key: gold_dimdate
+          notebook_task:
+            notebook_path: ./databricks/notebooks/silver_to_gold/dlt_gold_dimdate
+            base_parameters:
+              catalog: ${var.catalog_name}
+              schema: ${var.gold_schema}
+          existing_cluster_id: ${var.cluster_id}
+          depends_on:
+            - task_key: gold_factstream
