@@ -3,58 +3,11 @@
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
 
 # 🏗️ Architecture
-┌──────────────────────────────────────────────────────────────────┐
-│                        SOURCE LAYER                               │
-│               Azure SQL Database                                  │
-│     FactStream | DimUser | DimTrack | DimDate  ! DimArtist        │
-└─────────────────────────┬────────────────────────────────────────┘
-                          │
-                          ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                     INGESTION LAYER                               │
-│          Azure Data Factory — Metadata Driven Pipeline            │
-│                                                                   │
-│  ┌─────────────┐   ┌──────────────┐   ┌────────────────────┐   │
-│  │  last_cdc   │──►│azuresqlToLake│──►│ if_incremental_    │   │
-│  │  (Lookup)   │   │  (Copy Data) │   │ data (Condition)   │   │
-│  └─────────────┘   └──────────────┘   └────────────────────┘   │
-│                                                 │                 │
-│                              ┌──────────────────┤                 │
-│                              ▼                  ▼                 │
-│                         ✅ Success         ✅ Failure            │
-│                         Email Alert         Email Alert           │
-└─────────────────────────┬────────────────────────────────────────┘
-                          │
-                          ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                      BRONZE LAYER                                 │
-│              Azure Data Lake Storage Gen2                         │
-│         Raw Parquet Files — Incremental Only                      │
-└─────────────────────────┬────────────────────────────────────────┘
-                          │
-                          ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                      SILVER LAYER                                 │
-│               Databricks + Auto Loader + Delta Lake               │
-│  • cloudFiles Streaming  • Schema Evolution                      │
-│  • Transformations       • Jinja2 Dynamic Joins                  │
-│  • Checkpoint Management • Unity Catalog                         │
-└─────────────────────────┬────────────────────────────────────────┘
-                          │
-                          ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                       GOLD LAYER                                  │
-│            Databricks Delta Live Tables (DLT)                     │
-│  Staging → DimDate | DimTrack | DimUser | FactStream             │
-│  • Data Quality Expectations • Incremental Streaming Tables      │
-└─────────────────────────┬────────────────────────────────────────┘
-                          │
-                          ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    DEPLOYMENT LAYER                               │
-│             Databricks Asset Bundles (DAB)                        │
-│         Dev Environment | Prod Environment | GitHub CI/CD        │
-└──────────────────────────────────────────────────────────────────┘
+<img width="314" height="275" alt="arc 1" src="https://github.com/user-attachments/assets/1adaf052-f513-4edb-944a-089e6c6120c2" />
+<img width="318" height="281" alt="arc 2" src="https://github.com/user-attachments/assets/e81475f5-d38f-45b0-9c73-ccbdc2802cba" />
+<img width="308" height="80" alt="arc 3" src="https://github.com/user-attachments/assets/6744502c-001c-4a1f-9ba0-3e32caa715dd" />
+
+
 
 
 # 🛠️ Tech Stack
