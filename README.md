@@ -6,7 +6,7 @@
 ┌──────────────────────────────────────────────────────────────────┐
 │                        SOURCE LAYER                               │
 │               Azure SQL Database                                  │
-│     FactStream | DimUser | DimTrack | DimDate  ! DimArtist              │
+│     FactStream | DimUser | DimTrack | DimDate  ! DimArtist        │
 └─────────────────────────┬────────────────────────────────────────┘
                           │
                           ▼
@@ -74,42 +74,12 @@ Source Database:    Azure SQL Database
 ## Languages:          Python, PySpark, SQL 
 
 # 📂 Repository Structure
-END TO END AZURE DATA ENGINEERING PROJECT
-│
-├── adf/                                         
-# Azure Data Factory
-│   ├── pipeline/
-│   │   └── incremental_Loop.json
-│   ├── dataset/
-│   ├── linkedService/
-│   └── trigger/
-│
+<img width="343" height="174" alt="structure 2" src="https://github.com/user-attachments/assets/fb8622f1-45a4-42ad-a558-cf6cc7ec0ffb" />
+
+
 # databricks/
-│   ├── notebooks/
-│   │   ├── bronze_to_silver/
-│   │   │   ├── nb_silver_factstream.py
-│   │   │   ├── nb_silver_dimuser.py
-│   │   │   ├── nb_silver_dimtrack.py
-│   │   │   └── nb_silver_dimdate.py
-│   │   ├── silver_to_gold/
-│   │   │   ├── dlt_gold_factstream.py
-│   │   │   ├── dlt_gold_dimuser.py
-│   │   │   ├── dlt_gold_dimtrack.py
-│   │   │   └── dlt_gold_dimdate.py
-│   │   └── utils/
-│   │       └── reusable.py
-│   └── bundles/
-│       ├── databricks.yml
-│       └── databricks.dev.yml.example
-│
-├── sql/
-│   └── watermark_table.sql
-│
-├── docs/
-│   └── screenshots/
-│
-├── .gitignore
-└── README.md
+<img width="284" height="305" alt="structure" src="https://github.com/user-attachments/assets/6a392592-9db2-4474-a98c-2bb9e8e980dc" />
+
 
 # 1️⃣ ADF Metadata Driven Pipeline — CDC ForEach Loop
 
@@ -187,13 +157,9 @@ pythonparameters = [
 Jinja2 template dynamically generates LEFT JOIN SQL across all Silver tables — no hardcoded logic.
 
 ## 4. Gold Layer — Delta Live Tables Star Schema
-                    ┌─────────────┐
-                    │   DimDate   │
-                    └──────┬──────┘
-                           │
-┌───────────┐    ┌─────────▼──────────┐    ┌────────────┐
-│  DimUser  ├────►    FactStream      ◄────┤  DimTrack  │
-└───────────┘    └────────────────────┘    └────────────┘
+<img width="313" height="102" alt="data model" src="https://github.com/user-attachments/assets/aee8b763-36a1-478f-bd6a-1af6b4a9d824" />
+
+                
 # DLT Data Quality
 python@dlt.expect("valid_user_id", "user_id IS NOT NULL")
 @dlt.expect("valid_stream_id", "stream_id IS NOT NULL")
@@ -223,17 +189,8 @@ databricks bundle deploy --target prod
 
 
 # 🔑 Key Design Decisions
-Decision               Reason 
-Metadata Driven ADF    One pipeline handles all tables dynamically
-CDC Watermark          Only incremental data loaded — no full refresh
-Auto Loader            Scalable streaming — processes only new files
-Delta Lake             ACID, time travel, schema evolution
-jinja2 Joins           Dynamic SQL — no hardcoded table logic
-DLT Gold Layer         Built-in quality, lineage and monitoring
-DAB CI/CD              Clean dev/prod environment separation
-Unity Catalog          Centralized governance and lineage
-Email Alerting         Immediate notification on success or failure
-Serverless Compute     Cost efficient — no cluster management
+<img width="381" height="203" alt="key design decisions" src="https://github.com/user-attachments/assets/49a47bd3-f2e6-4846-93b1-fbf06fd1fea1" />
+
 
 
 # 📧 Email Alerting
@@ -243,22 +200,6 @@ Sends instant email on success/failure with pipeline name and pipeline ID crucia
 # Setup local bundle config
 cp databricks/bundles/databricks.dev.yml.example \
    databricks/bundles/databricks.dev.yml
-# Fill in your workspace URL, email and cluster ID
-
-# Deploy to dev
-databricks bundle deploy --target dev \
-    --var-file databricks/bundles/databricks.dev.yml
-
-👤 Author
-Zain ul Abideen
-
-LinkedIn: linkedin.com/in/yourprofile
-GitHub: github.com/yourusername
-
-
-📜 License
-MIT License
-
 
 
 
