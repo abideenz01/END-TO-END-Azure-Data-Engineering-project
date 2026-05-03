@@ -137,7 +137,7 @@ databricks bundle deploy --target prod
 
 
 # 📧 Email Alerting
-Sends instant email on success/failure with pipeline name and pipeline ID crucial for identification of successfull/failed pipelines out of among multiple pipelines running simultaneously
+Sends instant email on success/failure with pipeline Name and pipeline ID crucial for identification of successful/failed pipelines o among multiple pipelines running simultaneously
 
 
 # Setup local bundle config
