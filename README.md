@@ -2,7 +2,7 @@
 ### A production-grade, end-to-end Azure Data Engineering project that ingests streaming music data from an Azure SQL Database, processes it incrementally through Bronze → Silver → Gold layers using the Medallion Architecture, and serves it as a Star Schema dimensional model for analytics consumption.
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
 
-## 🏗️ Architecture
+# 🏗️ Architecture
 ┌──────────────────────────────────────────────────────────────────┐
 │                        SOURCE LAYER                               │
 │               Azure SQL Database                                  │
@@ -19,7 +19,7 @@
 │  │  (Lookup)   │   │  (Copy Data) │   │ data (Condition)   │   │
 │  └─────────────┘   └──────────────┘   └────────────────────┘   │
 │                                                 │                 │
-│                              ┌──────────────────┤   (for testing alert is activated on success and failure of pipeline)            │
+│                              ┌──────────────────┤                 │
 │                              ▼                  ▼                 │
 │                         ✅ Success         ✅ Failure            │
 │                         Email Alert         Email Alert           │
@@ -57,23 +57,23 @@
 └──────────────────────────────────────────────────────────────────┘
 
 
-## 🛠️ Tech Stack
-## Category: Technology 
-## Cloud Platform:     Microsoft AzureData 
-## Ingestion:          Azure Data Factory (Metadata Driven) 
-## Data Storage:       Azure Data Lake Storage Gen2 
-## Data Processing:    Azure Databricks (Serverless Compute)
-## File Format:        Delta Lake, Parquet 
-## Streaming:          Auto Loader (cloudFiles)
-## Gold Orchestration: Delta Live Tables (DLT) 
-## Dynamic SQL:        Jinja2 Templating 
-## Governance:         Unity Catalog 
-## CI/CD:              GitHub + Databricks Asset Bundles 
-## Alerting:           Web Activity + Email Notifications
-## Source Database:    Azure SQL Database 
+# 🛠️ Tech Stack
+Category: Technology 
+Cloud Platform:     Microsoft AzureData 
+Ingestion:          Azure Data Factory (Metadata Driven) 
+Data Storage:       Azure Data Lake Storage Gen2 
+Data Processing:    Azure Databricks (Serverless Compute)
+File Format:        Delta Lake, Parquet 
+Streaming:          Auto Loader (cloudFiles)
+Gold Orchestration: Delta Live Tables (DLT) 
+Dynamic SQL:        Jinja2 Templating 
+Governance:         Unity Catalog 
+CI/CD:              GitHub + Databricks Asset Bundles 
+Alerting:           Web Activity + Email Notifications
+Source Database:    Azure SQL Database 
 ## Languages:          Python, PySpark, SQL 
 
-## 📂 Repository Structure
+# 📂 Repository Structure
 END TO END AZURE DATA ENGINEERING PROJECT
 │
 ├── adf/                                         
@@ -84,7 +84,7 @@ END TO END AZURE DATA ENGINEERING PROJECT
 │   ├── linkedService/
 │   └── trigger/
 │
-## databricks/
+# databricks/
 │   ├── notebooks/
 │   │   ├── bronze_to_silver/
 │   │   │   ├── nb_silver_factstream.py
@@ -111,11 +111,155 @@ END TO END AZURE DATA ENGINEERING PROJECT
 ├── .gitignore
 └── README.md
 
-## 1️⃣ ADF Metadata Driven Pipeline — CDC ForEach Loop
+# 1️⃣ ADF Metadata Driven Pipeline — CDC ForEach Loop
 
 Incremental pipeline running inside ForEach with last_cdc Lookup → azuresqlToLake Copy → if_incremental_data Condition. All activities succeeded in 4m 31s.
 <img width="1903" height="865" alt="Azure Project Pipeline" src="https://github.com/user-attachments/assets/e51216d8-64c6-4a6e-ab18-2b99357d88b9" />
 
-## 2️⃣ ADF Pipeline — Full Run (26 Activities Succeeded)
+# 2️⃣ ADF Pipeline — Full Run (26 Activities Succeeded)
 Complete pipeline run showing all 26 activities succeeded including Delete, Copy Data and If Condition across all tables dynamically.
+<img width="949" height="431" alt="-Azure Project Pipeline" src="https://github.com/user-attachments/assets/be816597-298c-49f2-a705-e98f422f488a" />
+
+# 3️⃣ ADF Pipeline — Web Activity Email Integration
+Pipeline architecture showing ForEach loop connected to Web activity triggering email alerts on both pipeline success ✅ and failure ❌ paths. Connected to both for testing purpose.
+<img width="929" height="361" alt="Final Running Pipeline" src="https://github.com/user-attachments/assets/694ff145-ff84-40dc-9050-31d4be87e219" />
+
+# 4️⃣ Delta Live Tables — Gold Layer Pipeline
+DLT pipeline showing staging tables (dimdate_stg, dimtrack_stg, dimuser_stg, factstream_stg) flowing into Gold dimension and fact tables. All 8 streaming tables completed with data quality expectations applied.
+<img width="952" height="451" alt="Delta Live Tables Pipeline with incremental load" src="https://github.com/user-attachments/assets/010a14e9-b4fa-48c7-af7b-54700274ca57" />
+
+# 7️⃣ Email Alert — Pipeline Success Notification
+Automated success email confirming pipeline executed successfully with Pipeline Name and RunID details.
+<img width="448" height="295" alt="Screenshot 2026-05-01 144759" src="https://github.com/user-attachments/assets/aba5ea57-279b-4274-bde1-bddf3e279a1b" />
+
+# 🔄 Pipeline Details
+1. ADF — Metadata Driven CDC Pipeline
+ForEach Loop Flow
+ForEach (Dynamic Table List)
+    ├── last_cdc       → Lookup last CDC timestamp from JSON
+    ├── azuresqlToLake → Copy WHERE updated_at > last_cdc
+    ├── if_incremental → Update watermark if new rows exist
+    └── Web Activity   → Email on success or failure
+CDC Watermark (FactStream_cdc/cdc_json)
+json{"cdc": "2025-10-07T19:49:56"}
+
+# 2. Bronze → Silver — Auto Loader Streaming
+pythondf = (
+    spark.readStream
+        .format("cloudFiles")
+        .option("cloudFiles.format", "parquet")
+        .option("cloudFiles.schemaLocation", schema_path)
+        .option("schemaEvolutionMode", "addNewColumns")
+        .load(bronze_path)
+)
+
+df_transformed = reusable().dropColumns(df, ['_rescued_data'])
+df_transformed = df_transformed.withColumn("user_name", upper(col("user_name")))
+
+df_transformed.writeStream \
+    .format("delta") \
+    .outputMode("append") \
+    .option("checkpointLocation", checkpoint_path) \
+    .trigger(availableNow=True) \
+    .toTable(f"`spotify-cata`.`silver`.`{table_name}`") \
+    .awaitTermination()
+
+# 3. Jinja2 Dynamic Joins — Silver Layer
+pythonparameters = [
+    {
+        "table": "spotify-cata.silver.factstream",
+        "alias": "factstream",
+        "cols": "factstream.stream_id, factstream.listen_duration"
+    },
+    {
+        "table": "spotify-cata.silver.dimuser",
+        "alias": "dimuser",
+        "cols": "dimuser.user_id, dimuser.user_name",
+        "condition": "factstream.user_id = dimuser.user_id"
+    },
+    {
+        "table": "spotify-cata.silver.dimtrack",
+        "alias": "dimtrack",
+        "cols": "dimtrack.track_id, dimtrack.track_name",
+        "condition": "factstream.track_id = dimtrack.track_id"
+    }
+]
+Jinja2 template dynamically generates LEFT JOIN SQL across all Silver tables — no hardcoded logic.
+
+## 4. Gold Layer — Delta Live Tables Star Schema
+                    ┌─────────────┐
+                    │   DimDate   │
+                    └──────┬──────┘
+                           │
+┌───────────┐    ┌─────────▼──────────┐    ┌────────────┐
+│  DimUser  ├────►    FactStream      ◄────┤  DimTrack  │
+└───────────┘    └────────────────────┘    └────────────┘
+# DLT Data Quality
+python@dlt.expect("valid_user_id", "user_id IS NOT NULL")
+@dlt.expect("valid_stream_id", "stream_id IS NOT NULL")
+@dlt.expect_or_drop("valid_duration", "listen_duration > 0")
+
+# 5. CI/CD — Databricks Asset Bundles
+yamlbundle:
+  name: spotify_dab
+
+targets:
+  dev:
+    mode: development
+    presets:
+      source_linked_deployment: false
+    workspace:
+      host: ${var.workspace_host}
+
+  prod:
+    mode: production
+    workspace:
+      host: ${var.workspace_host}
+bash# Deploy to dev
+databricks bundle deploy --target dev
+
+# Deploy to prod
+databricks bundle deploy --target prod
+
+
+# 🔑 Key Design Decisions
+Decision               Reason 
+Metadata Driven ADF    One pipeline handles all tables dynamically
+CDC Watermark          Only incremental data loaded — no full refresh
+Auto Loader            Scalable streaming — processes only new files
+Delta Lake             ACID, time travel, schema evolution
+jinja2 Joins           Dynamic SQL — no hardcoded table logic
+DLT Gold Layer         Built-in quality, lineage and monitoring
+DAB CI/CD              Clean dev/prod environment separation
+Unity Catalog          Centralized governance and lineage
+Email Alerting         Immediate notification on success or failure
+Serverless Compute     Cost efficient — no cluster management
+
+
+# 📧 Email Alerting
+Sends instant email on success/failure with pipeline name and pipeline ID crucial for identification of successfull/failed pipelines out of among multiple pipelines running simultaneously
+
+
+# Setup local bundle config
+cp databricks/bundles/databricks.dev.yml.example \
+   databricks/bundles/databricks.dev.yml
+# Fill in your workspace URL, email and cluster ID
+
+# Deploy to dev
+databricks bundle deploy --target dev \
+    --var-file databricks/bundles/databricks.dev.yml
+
+👤 Author
+Zain ul Abideen
+
+LinkedIn: linkedin.com/in/yourprofile
+GitHub: github.com/yourusername
+
+
+📜 License
+MIT License
+
+
+
+
 
