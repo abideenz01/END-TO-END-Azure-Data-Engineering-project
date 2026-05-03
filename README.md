@@ -11,20 +11,10 @@
 
 
 # 🛠️ Tech Stack
-Category: Technology 
-Cloud Platform:     Microsoft AzureData 
-Ingestion:          Azure Data Factory (Metadata Driven) 
-Data Storage:       Azure Data Lake Storage Gen2 
-Data Processing:    Azure Databricks (Serverless Compute)
-File Format:        Delta Lake, Parquet 
-Streaming:          Auto Loader (cloudFiles)
-Gold Orchestration: Delta Live Tables (DLT) 
-Dynamic SQL:        Jinja2 Templating 
-Governance:         Unity Catalog 
-CI/CD:              GitHub + Databricks Asset Bundles 
-Alerting:           Web Activity + Email Notifications
-Source Database:    Azure SQL Database 
-## Languages:          Python, PySpark, SQL 
+<img width="300" height="449" alt="T 1" src="https://github.com/user-attachments/assets/8a6cb791-9700-4deb-928c-cf097e6a15c7" />
+<img width="290" height="145" alt="T 2" src="https://github.com/user-attachments/assets/454cded9-961c-46d9-a060-8dead18bcb4d" />
+
+
 
 # 📂 Repository Structure
 <img width="343" height="174" alt="structure 2" src="https://github.com/user-attachments/assets/fb8622f1-45a4-42ad-a558-cf6cc7ec0ffb" />
