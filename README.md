@@ -91,6 +91,10 @@ df_transformed.writeStream \
     .awaitTermination()
 
 # 3. Jinja2 Dynamic Joins — Silver Layer
+
+
+https://github.com/user-attachments/assets/5b6f52a6-2aaf-49c3-ac63-1ca2e1140636
+
 pythonparameters = [
     {
         "table": "spotify-cata.silver.factstream",
