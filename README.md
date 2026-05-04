@@ -115,7 +115,9 @@ Jinja2 template dynamically generates LEFT JOIN SQL across all Silver tables —
 ## 4. Gold Layer — Delta Live Tables Star Schema
 # 4️⃣ Delta Live Tables — Gold Layer Pipeline
 DLT pipeline showing staging tables (dimdate_stg, dimtrack_stg, dimuser_stg, factstream_stg) flowing into Gold dimension and fact tables. All 8 streaming tables completed with data quality expectations applied.
-https://github.com/user-attachments/assets/cbd2ac7a-492a-40d5-b633-6e12819a534d
+
+https://github.com/user-attachments/assets/f75a8af5-d17a-436e-b1eb-929a6bfc281f
+
 
 
                 
