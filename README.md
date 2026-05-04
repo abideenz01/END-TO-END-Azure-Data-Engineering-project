@@ -38,8 +38,13 @@
 
 # 1️⃣ ADF Metadata Driven Pipeline — CDC ForEach Loop
 
-Incremental pipeline running inside ForEach with last_cdc Lookup → azuresqlToLake Copy → if_incremental_data Condition. All activities succeeded in 4m 31s.
-<img width="1903" height="865" alt="Azure Project Pipeline" src="https://github.com/user-attachments/assets/e51216d8-64c6-4a6e-ab18-2b99357d88b9" />
+Incremental pipeline running inside ForEach with last_cdc Lookup → azuresqlToLake Copy → if_incremental_data Condition. 
+
+https://github.com/user-attachments/assets/e602c876-0c3d-4b5e-a86b-93fabfcb251e
+
+
+
+
 
 # 2️⃣ ADF Pipeline — Full Run (26 Activities Succeeded)
 Complete pipeline run showing all 26 activities succeeded including Delete, Copy Data and If Condition across all tables dynamically.
