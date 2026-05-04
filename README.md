@@ -1,4 +1,9 @@
 ## 📌 Project Overview
+<div align="center">
+
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=26&pause=1000&color=0078D4&width=900&lines=Azure+Data+Engineering+Pipeline+🎵;ADF+%2B+Databricks+%2B+Delta+Lake;CDC+%2B+Medallion+Architecture+Implementation)](https://git.io/typing-svg)
+
+</div>
 ### A production-grade, end-to-end Azure Data Engineering project that ingests streaming music data from an Azure SQL Database, processes it incrementally through Bronze → Silver → Gold layers using the Medallion Architecture, and serves it as a Star Schema dimensional model for analytics consumption.
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
 
