@@ -4,6 +4,16 @@
 
 </div>
 
+<div align="center">
+
+![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure)
+![Databricks](https://img.shields.io/badge/Databricks-FF3621?style=for-the-badge)
+![ADF](https://img.shields.io/badge/Azure_Data_Factory-orange?style=for-the-badge)
+![Spark](https://img.shields.io/badge/Apache_Spark-E25A1C?style=for-the-badge&logo=apachespark)
+![Delta Lake](https://img.shields.io/badge/Delta_Lake-003366?style=for-the-badge)
+
+</div>
+
 ## 📌 Project Overview
 ### A production-grade, end-to-end Azure Data Engineering project that ingests streaming music data from an Azure SQL Database, processes it incrementally through Bronze → Silver → Gold layers using the Medallion Architecture, and serves it as a Star Schema dimensional model for analytics consumption.
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
