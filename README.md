@@ -54,11 +54,7 @@ Complete pipeline run showing all 26 activities succeeded including Delete, Copy
 Pipeline architecture showing ForEach loop connected to Web activity triggering email alerts on both pipeline success ✅ and failure ❌ paths. Connected to both for testing purpose.
 <img width="929" height="361" alt="Final Running Pipeline" src="https://github.com/user-attachments/assets/694ff145-ff84-40dc-9050-31d4be87e219" />
 
-# 4️⃣ Delta Live Tables — Gold Layer Pipeline
-DLT pipeline showing staging tables (dimdate_stg, dimtrack_stg, dimuser_stg, factstream_stg) flowing into Gold dimension and fact tables. All 8 streaming tables completed with data quality expectations applied.
-<img width="952" height="451" alt="Delta Live Tables Pipeline with incremental load" src="https://github.com/user-attachments/assets/010a14e9-b4fa-48c7-af7b-54700274ca57" />
-
-# 7️⃣ Email Alert — Pipeline Success Notification
+#  Email Alert — Pipeline Success Notification
 Automated success email confirming pipeline executed successfully with Pipeline Name and RunID details.
 <img width="448" height="295" alt="Screenshot 2026-05-01 144759" src="https://github.com/user-attachments/assets/aba5ea57-279b-4274-bde1-bddf3e279a1b" />
 
@@ -117,7 +113,10 @@ pythonparameters = [
 Jinja2 template dynamically generates LEFT JOIN SQL across all Silver tables — no hardcoded logic.
 
 ## 4. Gold Layer — Delta Live Tables Star Schema
-<img width="313" height="102" alt="data model" src="https://github.com/user-attachments/assets/aee8b763-36a1-478f-bd6a-1af6b4a9d824" />
+# 4️⃣ Delta Live Tables — Gold Layer Pipeline
+DLT pipeline showing staging tables (dimdate_stg, dimtrack_stg, dimuser_stg, factstream_stg) flowing into Gold dimension and fact tables. All 8 streaming tables completed with data quality expectations applied.
+https://github.com/user-attachments/assets/cbd2ac7a-492a-40d5-b633-6e12819a534d
+
 
                 
 # DLT Data Quality
