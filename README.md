@@ -19,7 +19,7 @@
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
 
 # 🏗️ Architecture
-[Architecture Diagram.drawio](https://github.com/user-attachments/files/27403848/Architecture.Diagram.drawio)
+<img width="947" height="161" alt="Architecture Diagram-2" src="https://github.com/user-attachments/assets/588bf81e-1241-438f-b741-3cb495559d78" />
 
 
 
