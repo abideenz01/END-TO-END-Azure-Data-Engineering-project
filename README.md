@@ -19,7 +19,8 @@
 ### The pipeline features CDC-based incremental loading, Auto Loader streaming, Jinja2 dynamic SQL, Delta Live Tables, email alerting and CI/CD via GitHub and Databricks Asset Bundles.
 
 # 🏗️ Architecture
-<img width="3816" height="421" alt="Architecture Diagram drawio" src="https://github.com/user-attachments/assets/d44ab6d7-ca92-4ed0-875f-c58d66c00702" />
+[Architecture Diagram.drawio](https://github.com/user-attachments/files/27403848/Architecture.Diagram.drawio)
+
 
 
 # 🛠️ Tech Stack
@@ -70,6 +71,10 @@ CDC Watermark (FactStream_cdc/cdc_json)
 json{"cdc": "2025-10-07T19:49:56"}
 
 # 2. Bronze → Silver — Auto Loader Streaming
+
+
+https://github.com/user-attachments/assets/ee33a9d9-a111-450f-96f8-e78dc0845f29
+
 pythondf = (
     spark.readStream
         .format("cloudFiles")
@@ -93,7 +98,10 @@ df_transformed.writeStream \
 # 3. Jinja2 Dynamic Joins — Silver Layer
 
 
-https://github.com/user-attachments/assets/5b6f52a6-2aaf-49c3-ac63-1ca2e1140636
+
+https://github.com/user-attachments/assets/58d56781-036f-4efb-87e0-d008ea7a5c27
+
+
 
 pythonparameters = [
     {
